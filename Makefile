@@ -1,4 +1,19 @@
 build:
 	dep ensure
-	env GOOS=linux go build -ldflags="-s -w" -o bin/hello hello/main.go
-	env GOOS=linux go build -ldflags="-s -w" -o bin/world world/main.go
+
+	echo "Compiling functions bin/handlers/ ..."
+
+	rm -rf bin/
+	cd src/handlers
+
+	for f in *.go; do
+		filename="${f%.go}"
+		if GOOS=linux go build -ldflags="-s -w" -0 "../../bin/handlers/$filename" ${f}; then
+		  echo "++ Compiled $filename"
+		else
+		  echo "-- Failed to compile $filename!"
+			exit 1
+		fi
+	done
+
+	echo "Complete."
